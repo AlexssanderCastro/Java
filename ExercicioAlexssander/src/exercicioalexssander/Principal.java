@@ -2,7 +2,7 @@ package exercicioalexssander;
 
 /**
  *
- * @author IFTM
+ * @author Alexssander
  */
 public class Principal {
 
