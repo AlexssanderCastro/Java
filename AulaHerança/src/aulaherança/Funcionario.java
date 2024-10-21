@@ -2,7 +2,7 @@ package aulaherança;
 
 /**
  *
- * @author IFTM
+ * @author Alexssander
  */
 public class Funcionario {
     
