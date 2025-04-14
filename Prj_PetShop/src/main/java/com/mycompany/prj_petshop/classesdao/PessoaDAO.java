@@ -114,6 +114,46 @@ public class PessoaDAO {
         
         return p;
     }
+
+    public int editar(Pessoa p) {
+        int linhasAfetadas=0;
+        
+        try{
+            PreparedStatement stmt = conn.prepareStatement("UPDATE pessoa set nome=?, cpf=?, data_nascimento=? where idpessoa=?", Statement.RETURN_GENERATED_KEYS);
+            stmt.setString(1, p.getNome());
+            stmt.setString(2, p.getCpf());
+            stmt.setDate(3, md.string2Date(p.getData_nascimento()));
+            stmt.setInt(4, p.getId());
+            linhasAfetadas=stmt.executeUpdate();
+            
+        }
+        catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        
+        return linhasAfetadas;
+    }
+
+    public int excluir(int id) {
+        int linhasAfetadas=0;
+        
+        try{
+            PreparedStatement stmt = conn.prepareStatement("Update pet set idpessoa = null WHERE idpessoa=?");
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+            
+            stmt = conn.prepareStatement("DELETE FROM pessoa WHERE idpessoa=?");
+            stmt.setInt(1, id);
+            
+            linhasAfetadas=stmt.executeUpdate();
+            
+        }
+        catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        
+        return linhasAfetadas;
+    }
 }
 
 

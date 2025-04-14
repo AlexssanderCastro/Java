@@ -25,9 +25,21 @@ public class PetBO {
         return pDAO.salvar(pet);
     }
 
-    public ArrayList<Pessoa> verTutoresPorNome(String texto) {
+    public List<Pessoa> getPessoas(String nome) {
         PessoaBO peBO = new PessoaBO();
-        return peBO.verTutoresPorNome(texto);
+        return peBO.getPessoas(nome);
+    }
+
+    public List<Pet> getPets(String nome) {
+        return pDAO.getPets(nome);
+    }
+
+    public int editar(Pet pet) {
+        return pDAO.editar(pet);
+    }
+
+    public int excluir(int idPet) {
+        return pDAO.excluir(idPet);
     }
     
     

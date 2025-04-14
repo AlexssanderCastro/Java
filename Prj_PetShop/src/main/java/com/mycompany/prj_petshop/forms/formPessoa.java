@@ -21,15 +21,20 @@ public class formPessoa extends javax.swing.JFrame {
     
     private void preencherCombo(){
         String nome = txtNomeCons.getText();
+        
+        
         if(!nome.isEmpty()){
             lstPessoas = pBO.getPessoas(nome);
             cmbPessoas.removeAllItems();
+            cmbPessoas.addItem("Selecione");
+            
             lstPessoas.forEach(itemPessoa ->{
                 cmbPessoas.addItem(itemPessoa.getNome()+ " | "+itemPessoa.getId());
                 });
+            cmbPessoas.setSelectedIndex(0);
         }
         else{
-            cmbPessoas.removeAllItems();
+            preencherComboStart();
         }
     }
     /**
@@ -38,7 +43,7 @@ public class formPessoa extends javax.swing.JFrame {
     public formPessoa() {
         initComponents();
         pBO = new PessoaBO();
-    }
+        preencherComboStart();    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -376,6 +381,7 @@ public class formPessoa extends javax.swing.JFrame {
         if(codigo>0){
             txtId.setText(String.valueOf(codigo));
             JOptionPane.showMessageDialog(null,"Dados salvos com sucesso!!!");
+            novo();
         }else{
             JOptionPane.showMessageDialog(null,"Erro ao salvar os dados");
         }
@@ -384,19 +390,52 @@ public class formPessoa extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        // TODO add your handling code here:
+        int index=cmbPessoas.getSelectedIndex();
+        if(index>0){
+            Pessoa pessoa = lstPessoas.get(index-1);
+            
+            pessoa.setNome(txtNome.getText());
+            pessoa.setCpf(txtCPF.getText());
+            pessoa.setData_nascimento(txtDataNascimento.getText());
+            int confirmacao=pBO.editar(pessoa);
+
+            if(confirmacao==1){
+                JOptionPane.showMessageDialog(null,"Dados editados com sucesso!!!");
+                novo();
+            }else{
+                JOptionPane.showMessageDialog(null,"Erro ao editar dados");
+            }
+        }else{
+            JOptionPane.showMessageDialog(null,"Escolha uma pessoa para editar");
+        }
+        
+        
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void txtIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_txtIdActionPerformed
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
-        // TODO add your handling code here:
+        int index=cmbPessoas.getSelectedIndex();
+        if(index>0){
+            Pessoa pessoa = lstPessoas.get(index-1);
+        
+            int confirmacao=pBO.excluir(pessoa.getId());
+            if(confirmacao==1){
+                JOptionPane.showMessageDialog(null,"Dados excluidos com sucesso!!!");
+                novo();
+            }else{
+                JOptionPane.showMessageDialog(null,"Erro ao excluir dados");
+            }
+        }else{
+            JOptionPane.showMessageDialog(null,"Escolha uma pessoa para excluir");
+        }
+        
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
-        // TODO add your handling code here:
+        System.exit(0);
     }//GEN-LAST:event_btnSairActionPerformed
 
     private void txtNomeConsCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtNomeConsCaretUpdate
@@ -477,11 +516,14 @@ public class formPessoa extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void preencherCampos() {
-        if(!lstPessoas.isEmpty()){
-            int index=cmbPessoas.getSelectedIndex();
-            Pessoa pessoa = lstPessoas.get(index);
+    
+        int index=cmbPessoas.getSelectedIndex();
+        if(index>0){
+            Pessoa pessoa = lstPessoas.get(index-1);
             preencherCampos(pessoa);
         }
+        
+        
         
     }
 
@@ -503,4 +545,19 @@ public class formPessoa extends javax.swing.JFrame {
         btnSalvar.setEnabled(true);
         
     }
+
+    private void preencherComboStart() {
+        String nome="";
+        lstPessoas = pBO.getPessoas(nome);
+        cmbPessoas.removeAllItems();
+        
+        cmbPessoas.addItem("Selecione");
+        lstPessoas.forEach(itemPessoa ->{
+            cmbPessoas.addItem(itemPessoa.getNome()+ " | "+itemPessoa.getId());
+        });
+        cmbPessoas.setSelectedIndex(0);
+    
+    }
+        
+    
 }

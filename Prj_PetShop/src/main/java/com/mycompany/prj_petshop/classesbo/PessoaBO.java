@@ -30,4 +30,12 @@ public class PessoaBO {
     public List<Pessoa> getPessoas(String nome){
         return pDAO.getPessoas(nome);
     }
+
+    public int editar(Pessoa pessoa) {
+        return pDAO.editar(pessoa);
+    }
+
+    public int excluir(int id) {
+        return pDAO.excluir(id);
+    }
 }

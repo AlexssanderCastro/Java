@@ -4,6 +4,7 @@
  */
 package com.mycompany.prj_petshop.classesdao;
 
+import com.mycompany.prj_petshop.objetos.Pessoa;
 import com.mycompany.prj_petshop.objetos.Pet;
 import com.mycompany.prj_petshop.utilitarios.Conexao;
 import com.mycompany.prj_petshop.utilitarios.ManipulaData;
@@ -12,6 +13,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -52,5 +55,85 @@ public class PetDAO {
         }
         return p;
         
+    }
+
+    public List<Pet> getPets(String nome) {
+        List<Pet> lstP = new ArrayList<>();
+        ResultSet rs;
+        try{
+            
+            PreparedStatement ppStmt = conn.prepareStatement("SELECT * FROM pet WHERE nome ILIKE ?");
+            ppStmt.setString(1,nome+"%");
+            rs=ppStmt.executeQuery();
+            while(rs.next()){
+                lstP.add(getPet(rs));
+            }
+            
+            
+            
+        }
+        catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        
+        return lstP;
+    }
+
+    private Pet getPet(ResultSet rs) throws SQLException {
+        Pet p = new Pet();
+        Pessoa pe = new Pessoa();
+        
+        p.setIdPet(rs.getInt("idpet"));
+        p.setNome(rs.getString("nome"));
+        p.setEspecie(rs.getString("especie"));
+        p.setRaca(rs.getString("raca"));
+        p.setPorte(rs.getString("porte"));
+        p.setCor(rs.getString("cor"));
+        p.setData_nascimento(md.date2String(rs.getString("data_nascimento")));
+        
+        pe.setId(rs.getInt("idpessoa"));
+        p.setP(pe);
+        
+        return p;
+    }
+
+    public int editar(Pet pet) {
+        int linhasAfetadas=0;
+        
+        try{
+            PreparedStatement stmt = conn.prepareStatement("UPDATE pet set nome=?, especie=?, raca=?, porte=?, cor=?, data_nascimento=? where idpet=?");
+            stmt.setString(1, pet.getNome());
+            stmt.setString(2, pet.getEspecie());
+            stmt.setString(3, pet.getRaca());
+            stmt.setString(4, pet.getPorte());
+            stmt.setString(5, pet.getCor());
+            stmt.setDate(6, md.string2Date(pet.getData_nascimento()));
+            stmt.setInt(7, pet.getIdPet());
+            linhasAfetadas=stmt.executeUpdate();
+            
+        }
+        catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        
+        return linhasAfetadas;
+    }
+
+    public int excluir(int idPet) {
+        int linhasAfetadas=0;
+        
+        try{
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM pet where idpet=?");
+            
+            stmt.setInt(1, idPet);
+            
+            linhasAfetadas=stmt.executeUpdate();
+            
+        }
+        catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        
+        return linhasAfetadas;
     }
 }
