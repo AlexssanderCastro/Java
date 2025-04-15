@@ -10,6 +10,7 @@ import com.mycompany.prj_petshop.objetos.Pet;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.text.MaskFormatter;
 
 /**
  *
@@ -17,6 +18,7 @@ import javax.swing.JOptionPane;
  */
 public class formPet extends javax.swing.JFrame {
     
+    private MaskFormatter FormatoDataNasc;
     private final PetBO pBO;
     private List<Pessoa> lstPessoas = null;
     private List<Pet> lstPets = null;
@@ -164,7 +166,7 @@ public class formPet extends javax.swing.JFrame {
         jLabel14 = new javax.swing.JLabel();
         txtCor = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -202,7 +204,7 @@ public class formPet extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(100, 100, 100)
                 .addComponent(btnSalvarPet, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
                 .addComponent(btnEditarPet, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(86, 86, 86)
                 .addComponent(btnExcluirPet, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -458,7 +460,7 @@ public class formPet extends javax.swing.JFrame {
                                     .addComponent(txtCor)))))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(txtNomePet, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtPortePet, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -469,7 +471,7 @@ public class formPet extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel11)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNomePet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
@@ -627,7 +629,7 @@ public class formPet extends javax.swing.JFrame {
     }//GEN-LAST:event_txtNomePetActionPerformed
 
     private void btnSairPetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairPetActionPerformed
-        System.exit(0);
+        
     }//GEN-LAST:event_btnSairPetActionPerformed
 
     private void txtNomePetConsCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtNomePetConsCaretUpdate

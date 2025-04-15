@@ -8,14 +8,16 @@ import com.mycompany.prj_petshop.classesbo.PessoaBO;
 import com.mycompany.prj_petshop.objetos.Pessoa;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
+import javax.swing.text.MaskFormatter;
 
 /**
  *
  * @author Alexssander
  */
 public class formPessoa extends javax.swing.JFrame {
-
+    private MaskFormatter FormatoDataNasc;
     private final PessoaBO pBO;
     private List<Pessoa> lstPessoas = null;
     
@@ -66,7 +68,13 @@ public class formPessoa extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         txtNome = new javax.swing.JTextField();
         txtCPF = new javax.swing.JTextField();
-        txtDataNascimento = new javax.swing.JTextField();
+        try{
+            FormatoDataNasc = new MaskFormatter ("##/##/####");
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null,"Não foi possível usar a Mascara");
+        }
+        txtDataNascimento = new JFormattedTextField(FormatoDataNasc);
         jLabel7 = new javax.swing.JLabel();
         txtId = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
@@ -78,7 +86,7 @@ public class formPessoa extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         btnSair = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(51, 51, 51));
         jPanel1.setForeground(new java.awt.Color(255, 255, 255));
@@ -435,7 +443,7 @@ public class formPessoa extends javax.swing.JFrame {
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
-        System.exit(0);
+        
     }//GEN-LAST:event_btnSairActionPerformed
 
     private void txtNomeConsCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtNomeConsCaretUpdate

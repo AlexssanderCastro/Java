@@ -4,6 +4,8 @@
 
 package com.mycompany.prj_petshop;
 
+import com.mycompany.prj_petshop.forms.formPrincipal;
+
 /**
  *
  * @author Alexssander
@@ -11,6 +13,6 @@ package com.mycompany.prj_petshop;
 public class Prj_PetShop {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        new formPrincipal().setVisible(true);
     }
 }
