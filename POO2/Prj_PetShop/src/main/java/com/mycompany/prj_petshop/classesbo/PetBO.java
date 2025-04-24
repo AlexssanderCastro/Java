@@ -41,6 +41,18 @@ public class PetBO {
     public int excluir(int idPet) {
         return pDAO.excluir(idPet);
     }
+
+    public List<Pet> getPets(String nome, String dataInicio, String dataFim) {
+        return pDAO.getPets(nome,dataInicio,dataFim);
+    }
+
+    public List<Pet> getPets(String dataInicio, String dataFim) {
+        return pDAO.getPets(dataInicio,dataFim);
+    }
+
+    public Pet getPet(int id) {
+        return pDAO.getPet(id);
+    }
     
     
     

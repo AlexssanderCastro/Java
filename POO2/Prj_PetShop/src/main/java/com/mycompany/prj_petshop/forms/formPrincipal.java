@@ -33,8 +33,8 @@ public class formPrincipal extends javax.swing.JFrame {
         mniCadClientes = new javax.swing.JMenuItem();
         mniCadPets = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        mniRelatClientes = new javax.swing.JMenuItem();
         mniRelatPets = new javax.swing.JMenuItem();
-        jMenuItem6 = new javax.swing.JMenuItem();
         JMenuitem = new javax.swing.JMenu();
         mniSair = new javax.swing.JMenuItem();
 
@@ -66,16 +66,21 @@ public class formPrincipal extends javax.swing.JFrame {
 
         jMenu2.setText("Relatórios");
 
-        mniRelatPets.setText("Relatório de Clientes");
-        jMenu2.add(mniRelatPets);
-
-        jMenuItem6.setText("Relatório de Pets");
-        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+        mniRelatClientes.setText("Relatório de Clientes");
+        mniRelatClientes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem6ActionPerformed(evt);
+                mniRelatClientesActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem6);
+        jMenu2.add(mniRelatClientes);
+
+        mniRelatPets.setText("Relatório de Pets");
+        mniRelatPets.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniRelatPetsActionPerformed(evt);
+            }
+        });
+        jMenu2.add(mniRelatPets);
 
         jMenuBar1.add(jMenu2);
 
@@ -120,9 +125,13 @@ public class formPrincipal extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_mniSairActionPerformed
 
-    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem6ActionPerformed
+    private void mniRelatPetsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniRelatPetsActionPerformed
+        new formRelatPet().setVisible(true);
+    }//GEN-LAST:event_mniRelatPetsActionPerformed
+
+    private void mniRelatClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniRelatClientesActionPerformed
+        new formRelatPessoa().setVisible(true);
+    }//GEN-LAST:event_mniRelatClientesActionPerformed
 
     /**
      * @param args the command line arguments
@@ -166,9 +175,9 @@ public class formPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem mniCadClientes;
     private javax.swing.JMenuItem mniCadPets;
+    private javax.swing.JMenuItem mniRelatClientes;
     private javax.swing.JMenuItem mniRelatPets;
     private javax.swing.JMenuItem mniSair;
     // End of variables declaration//GEN-END:variables

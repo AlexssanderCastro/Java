@@ -9,6 +9,7 @@ import com.mycompany.prj_petshop.objetos.Pessoa;
 import com.mycompany.prj_petshop.objetos.Pet;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.text.MaskFormatter;
 
@@ -32,6 +33,24 @@ public class formPet extends javax.swing.JFrame {
         preencherComboStart();
         preencherComboPetStart();
     }
+
+    public formPet(int CodigoSelecionado) {
+        initComponents();
+        pBO = new PetBO();
+        preencherCombo(CodigoSelecionado);
+        
+    }
+    private void preencherCombo(int id) {
+        Pet p = pBO.getPet(id);
+        cmbPet.removeAllItems();
+        cmbPet.addItem(p.getNome()+" | "+p.getIdPet());
+        lstPets = new ArrayList<Pet>();
+        lstPets.add(p);
+        lstPessoas = new ArrayList<Pessoa>();
+        lstPessoas.add(p.getP());
+        preencherCampos(p);
+        
+    }
     
     private void novo(){
          txtNomePet.setText("");
@@ -42,23 +61,32 @@ public class formPet extends javax.swing.JFrame {
          txtCor.setText("");
          txtTutor.setText("");
          txtNomePetCons.setText("");
+         cmbTutor.removeAllItems();
+         txtIdPet.setText("");
+         btnSalvarPet.setEnabled(true);
+         
     }
     private void preencherCampos() {
         int index=cmbPet.getSelectedIndex();
-        if(index>0){
-            Pet pet = lstPets.get(index-1);
-            preencherCampos(pet);
-        }
+        
+        Pet pet = lstPets.get(index);
+        preencherCampos(pet);
+        
     }
      private void preencherCampos(Pet pet) {
          
-         txtNomePet.setText(pet.getNome());
-         txtEspeciePet.setText(pet.getEspecie());
-         txtRacaPet.setText(pet.getRaca());
-         txtDataNascimentoPet.setText(pet.getData_nascimento());
-         txtPortePet.setText(pet.getPorte());
-         txtCor.setText(pet.getCor());
+        txtNomePet.setText(pet.getNome());
+        txtEspeciePet.setText(pet.getEspecie());
+        txtRacaPet.setText(pet.getRaca());
+        txtDataNascimentoPet.setText(pet.getData_nascimento());
+        txtPortePet.setText(pet.getPorte());
+        txtCor.setText(pet.getCor());
+        txtIdPet.setText(String.valueOf(pet.getIdPet()));
          
+        cmbTutor.removeAllItems();
+        cmbTutor.addItem(pet.getP().getNome() + " | " + pet.getP().getId());
+        btnSalvarPet.setEnabled(false); 
+        
      }
     
     private void preencherComboPet(){
@@ -68,11 +96,11 @@ public class formPet extends javax.swing.JFrame {
         if(!nome.isEmpty()){
             lstPets = pBO.getPets(nome);
             cmbPet.removeAllItems();
-            cmbPet.addItem("Selecione");
+            
             lstPets.forEach(itemPet ->{
                 cmbPet.addItem(itemPet.getNome()+ " | "+itemPet.getIdPet());
             });
-            cmbPet.setSelectedIndex(0);
+            
         }
         else{
             preencherComboPetStart();
@@ -85,7 +113,7 @@ public class formPet extends javax.swing.JFrame {
         lstPets = pBO.getPets(nome);
         cmbPet.removeAllItems();
         
-        cmbPet.addItem("Selecione");
+        
         
         lstPets.forEach(itemPet ->{
             cmbPet.addItem(itemPet.getNome()+ " | "+itemPet.getIdPet());
@@ -100,11 +128,10 @@ public class formPet extends javax.swing.JFrame {
         if(!nome.isEmpty()){
             lstPessoas = pBO.getPessoas(nome);
             cmbTutor.removeAllItems();
-            cmbTutor.addItem("Selecione");
             lstPessoas.forEach(itemPessoa ->{
                 cmbTutor.addItem(itemPessoa.getNome()+ " | "+itemPessoa.getId());
             });
-            cmbTutor.setSelectedIndex(0);
+            
         }
         else{
             preencherComboStart();
@@ -115,7 +142,6 @@ public class formPet extends javax.swing.JFrame {
         lstPessoas = pBO.getPessoas(nome);
         cmbTutor.removeAllItems();
         
-        cmbTutor.addItem("Selecione");
         lstPessoas.forEach(itemPessoa ->{
             cmbTutor.addItem(itemPessoa.getNome()+ " | "+itemPessoa.getId());
         });
@@ -136,6 +162,7 @@ public class formPet extends javax.swing.JFrame {
         btnSalvarPet = new javax.swing.JButton();
         btnEditarPet = new javax.swing.JButton();
         btnExcluirPet = new javax.swing.JButton();
+        novoBtn = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         btnSairPet = new javax.swing.JButton();
@@ -156,7 +183,13 @@ public class formPet extends javax.swing.JFrame {
         txtNomePet = new javax.swing.JTextField();
         txtEspeciePet = new javax.swing.JTextField();
         txtRacaPet = new javax.swing.JTextField();
-        txtDataNascimentoPet = new javax.swing.JTextField();
+        try{
+            FormatoDataNasc = new MaskFormatter ("##/##/####");
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null,"Não foi possível usar a Mascara");
+        }
+        txtDataNascimentoPet = new JFormattedTextField(FormatoDataNasc);
         txtPortePet = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         txtIdPet = new javax.swing.JTextField();
@@ -197,18 +230,29 @@ public class formPet extends javax.swing.JFrame {
             }
         });
 
+        novoBtn.setBackground(new java.awt.Color(204, 204, 204));
+        novoBtn.setForeground(new java.awt.Color(0, 0, 0));
+        novoBtn.setText("Novo");
+        novoBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                novoBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(100, 100, 100)
+                .addGap(54, 54, 54)
                 .addComponent(btnSalvarPet, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnEditarPet, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(86, 86, 86)
-                .addComponent(btnExcluirPet, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(111, 111, 111))
+                .addGap(68, 68, 68)
+                .addComponent(btnExcluirPet, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(65, 65, 65)
+                .addComponent(novoBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(72, 72, 72))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -217,7 +261,8 @@ public class formPet extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSalvarPet, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnEditarPet, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnExcluirPet, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnExcluirPet, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(novoBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(16, 16, 16))
         );
 
@@ -277,8 +322,7 @@ public class formPet extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Pet:");
 
-        cmbPet.setForeground(new java.awt.Color(255, 255, 255));
-        cmbPet.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbPet.setForeground(new java.awt.Color(0, 0, 0));
 
         jLabel12.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(255, 255, 255));
@@ -394,6 +438,7 @@ public class formPet extends javax.swing.JFrame {
         jLabel10.setForeground(new java.awt.Color(255, 255, 255));
         jLabel10.setText("ID:");
 
+        txtIdPet.setEnabled(false);
         txtIdPet.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtIdPetActionPerformed(evt);
@@ -533,6 +578,7 @@ public class formPet extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtNomePetConsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNomePetConsActionPerformed
@@ -542,28 +588,26 @@ public class formPet extends javax.swing.JFrame {
     private void btnSalvarPetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarPetActionPerformed
         Pet pet = new Pet();
         int index=cmbTutor.getSelectedIndex();
-        if(index>0){
-            Pessoa pessoa =  lstPessoas.get(index-1);
+        
+        Pessoa pessoa =  lstPessoas.get(index);
             
-            pet.setNome(txtNomePet.getText());
-            pet.setEspecie(txtEspeciePet.getText());
-            pet.setRaca(txtRacaPet.getText());
-            pet.setData_nascimento(txtDataNascimentoPet.getText());
-            pet.setPorte(txtPortePet.getText());
-            pet.setCor(txtCor.getText());
-            pet.setP(pessoa);
-            pBO.salvar(pet);
+        pet.setNome(txtNomePet.getText());
+        pet.setEspecie(txtEspeciePet.getText());
+        pet.setRaca(txtRacaPet.getText());
+        pet.setData_nascimento(txtDataNascimentoPet.getText());
+        pet.setPorte(txtPortePet.getText());
+        pet.setCor(txtCor.getText());
+        pet.setP(pessoa);
+        pBO.salvar(pet);
             
-            int codigo = pet.getIdPet();
-            if(codigo>0){
-                txtIdPet.setText(String.valueOf(codigo));
-                JOptionPane.showMessageDialog(null,"Dados salvos com sucesso!!!");
-            }else{
-                JOptionPane.showMessageDialog(null,"Erro ao salvar os dados");
-            }
+        int codigo = pet.getIdPet();
+        if(codigo>0){
+            txtIdPet.setText(String.valueOf(codigo));
+            JOptionPane.showMessageDialog(null,"Dados salvos com sucesso!!!");
         }else{
-           JOptionPane.showMessageDialog(null,"Escolha um tutor válido"); 
+            JOptionPane.showMessageDialog(null,"Erro ao salvar os dados");
         }
+        
         novo();
         
         
@@ -571,27 +615,26 @@ public class formPet extends javax.swing.JFrame {
 
     private void btnEditarPetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarPetActionPerformed
         int index=cmbPet.getSelectedIndex();
-        if(index>0){
-            Pet pet = lstPets.get(index-1);
+        
+        Pet pet = lstPets.get(index);
             
-            pet.setNome(txtNomePet.getText());
-            pet.setEspecie(txtEspeciePet.getText());
-            pet.setRaca(txtRacaPet.getText());
-            pet.setData_nascimento(txtDataNascimentoPet.getText());
-            pet.setPorte(txtPortePet.getText());
-            pet.setCor(txtCor.getText());
+        pet.setNome(txtNomePet.getText());
+        pet.setEspecie(txtEspeciePet.getText());
+        pet.setRaca(txtRacaPet.getText());
+        pet.setData_nascimento(txtDataNascimentoPet.getText());
+        pet.setPorte(txtPortePet.getText());
+        pet.setCor(txtCor.getText());
+        pet.setP(lstPessoas.get(cmbTutor.getSelectedIndex()));
             
-            int confirmacao=pBO.editar(pet);
+        int confirmacao=pBO.editar(pet);
 
-            if(confirmacao==1){
-                JOptionPane.showMessageDialog(null,"Dados editados com sucesso!!!");
+        if(confirmacao==1){
+            JOptionPane.showMessageDialog(null,"Dados editados com sucesso!!!");
                
-            }else{
-                JOptionPane.showMessageDialog(null,"Erro ao editar dados");
-            }
         }else{
-            JOptionPane.showMessageDialog(null,"Escolha um pet para editar");
+            JOptionPane.showMessageDialog(null,"Erro ao editar dados");
         }
+      
         novo();
         
     }//GEN-LAST:event_btnEditarPetActionPerformed
@@ -629,7 +672,7 @@ public class formPet extends javax.swing.JFrame {
     }//GEN-LAST:event_txtNomePetActionPerformed
 
     private void btnSairPetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairPetActionPerformed
-        
+        dispose();
     }//GEN-LAST:event_btnSairPetActionPerformed
 
     private void txtNomePetConsCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtNomePetConsCaretUpdate
@@ -642,20 +685,22 @@ public class formPet extends javax.swing.JFrame {
 
     private void btnExcluirPetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirPetActionPerformed
         int index=cmbPet.getSelectedIndex();
-        if(index>0){
-            Pet pet = lstPets.get(index-1);
+        
+        Pet pet = lstPets.get(index);
             
-            int confirmacao=pBO.excluir(pet.getIdPet());
+        int confirmacao=pBO.excluir(pet.getIdPet());
 
-            if(confirmacao==1){
-                JOptionPane.showMessageDialog(null,"Dados excluidos com sucesso!!!");
-            }else{
-                JOptionPane.showMessageDialog(null,"Erro ao excluir dados");
-            }
+        if(confirmacao==1){
+            JOptionPane.showMessageDialog(null,"Dados excluidos com sucesso!!!");
         }else{
-            JOptionPane.showMessageDialog(null,"Escolha um pet para editar");
+            JOptionPane.showMessageDialog(null,"Erro ao excluir dados");
         }
+        
     }//GEN-LAST:event_btnExcluirPetActionPerformed
+
+    private void novoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_novoBtnActionPerformed
+        novo();
+    }//GEN-LAST:event_novoBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -717,6 +762,7 @@ public class formPet extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JButton novoBtn;
     private javax.swing.JTextField txtCor;
     private javax.swing.JTextField txtDataNascimentoPet;
     private javax.swing.JTextField txtEspeciePet;

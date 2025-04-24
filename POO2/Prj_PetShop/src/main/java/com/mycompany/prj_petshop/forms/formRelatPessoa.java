@@ -4,6 +4,20 @@
  */
 package com.mycompany.prj_petshop.forms;
 
+import com.mycompany.prj_petshop.classesbo.PessoaBO;
+import com.mycompany.prj_petshop.objetos.Pessoa;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
+import java.util.regex.PatternSyntaxException;
+import javax.swing.JFormattedTextField;
+import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+import javax.swing.text.MaskFormatter;
+
 /**
  *
  * @author Alexssander
@@ -13,8 +27,16 @@ public class formRelatPessoa extends javax.swing.JFrame {
     /**
      * Creates new form formRelatPessoa
      */
+    private PessoaBO pBO;
+    private List<Pessoa> lstPessoas;
+    private MaskFormatter mftDataInicio, mftDataFim;
+    TableRowSorter<TableModel> sorter;
+    
     public formRelatPessoa() {
         initComponents();
+        pBO = new PessoaBO();
+        sorter= new TableRowSorter<TableModel>(tabPessoas.getModel());
+        tabPessoas.setRowSorter(sorter);
     }
 
     /**
@@ -33,17 +55,29 @@ public class formRelatPessoa extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         txtConsNome = new javax.swing.JTextField();
-        txtDataInicial = new javax.swing.JTextField();
+        try{
+            mftDataInicio = new MaskFormatter("##/##/####");
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Erro ao criar máscara na data inicial");
+        }
+        txtDataInicial = new JFormattedTextField(mftDataInicio);
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        txtDataFinal = new javax.swing.JTextField();
+        try{
+            mftDataFim = new MaskFormatter("##/##/####");
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Erro ao criar máscara na data final");
+        }
+        txtDataFinal = new JFormattedTextField(mftDataFim);
         btnConsultar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabPessoas = new javax.swing.JTable();
         jLabel7 = new javax.swing.JLabel();
         txtFiltro = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -61,6 +95,12 @@ public class formRelatPessoa extends javax.swing.JFrame {
 
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Data de Nascimento:");
+
+        txtConsNome.addCaretListener(new javax.swing.event.CaretListener() {
+            public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                txtConsNomeCaretUpdate(evt);
+            }
+        });
 
         txtDataInicial.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -170,6 +210,12 @@ public class formRelatPessoa extends javax.swing.JFrame {
         jLabel7.setForeground(new java.awt.Color(0, 0, 0));
         jLabel7.setText("Filtro:");
 
+        txtFiltro.addCaretListener(new javax.swing.event.CaretListener() {
+            public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                txtFiltroCaretUpdate(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -222,6 +268,7 @@ public class formRelatPessoa extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtDataInicialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDataInicialActionPerformed
@@ -233,8 +280,26 @@ public class formRelatPessoa extends javax.swing.JFrame {
     }//GEN-LAST:event_txtDataFinalActionPerformed
 
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
-        // TODO add your handling code here:
+        pesquisar();
     }//GEN-LAST:event_btnConsultarActionPerformed
+
+    private void txtConsNomeCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtConsNomeCaretUpdate
+        pesquisar();
+    }//GEN-LAST:event_txtConsNomeCaretUpdate
+
+    private void txtFiltroCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtFiltroCaretUpdate
+        String text = txtFiltro.getText();
+        if(text.length() ==0 ){
+            sorter.setRowFilter(null);
+        }
+        else{
+            try{
+                sorter.setRowFilter(RowFilter.regexFilter("^"+text));
+            }catch(PatternSyntaxException pse){
+                pse.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_txtFiltroCaretUpdate
 
     /**
      * @param args the command line arguments
@@ -289,4 +354,60 @@ public class formRelatPessoa extends javax.swing.JFrame {
     private javax.swing.JTextField txtDataInicial;
     private javax.swing.JTextField txtFiltro;
     // End of variables declaration//GEN-END:variables
+
+    private void pesquisar() {
+        String nome=txtConsNome.getText();
+        String dataInicio=txtDataInicial.getText().trim();
+        String dataFim=txtDataFinal.getText().trim();
+        
+        if(!nome.isEmpty() && (dataInicio.length()==4) && (dataFim.length()==4)){
+            lstPessoas = pBO.getPessoas(nome);
+            preencherTabela(lstPessoas);
+        }else if((!nome.isEmpty()) && (dataInicio.length()!=4) && (dataFim.length()!=4)){
+            lstPessoas = pBO.getPessoas(nome,dataInicio,dataFim);
+            preencherTabela(lstPessoas);
+        }else if((dataInicio.length()!=4) && (dataFim.length()!=4)){
+            lstPessoas = pBO.getPessoas(dataInicio,dataFim);
+            preencherTabela(lstPessoas);
+        }else{
+            lstPessoas = pBO.getPessoas("");
+            preencherTabela(lstPessoas);
+        }
+    }
+
+    private void preencherTabela(List<Pessoa> lstPessoas) {
+        DefaultTableModel tabelaPessoas = (DefaultTableModel)tabPessoas.getModel();
+        tabPessoas.getColumnModel().getColumn(0).setPreferredWidth(10);
+        tabPessoas.getColumnModel().getColumn(1).setPreferredWidth(180);
+        tabPessoas.getColumnModel().getColumn(2).setPreferredWidth(80);
+        tabelaPessoas.setNumRows(0);
+        
+        lstPessoas.forEach(itemPessoa->{
+            tabelaPessoas.addRow(new Object[]{
+                    itemPessoa.getId(), itemPessoa.getNome(), itemPessoa.getData_nascimento(),itemPessoa.getCpf()
+                }
+            );
+            }
+        );
+        
+        tabPessoas.addMouseListener(new MouseAdapter()
+        {
+            int LinhaSelecionada;
+            
+            int CodigoSelecionado;
+            
+            @Override
+            public void mousePressed(MouseEvent e){
+                if(e.getClickCount() == 2){
+                    LinhaSelecionada = tabPessoas.getSelectedRow();
+                    CodigoSelecionado = (int)(tabPessoas.getValueAt(LinhaSelecionada, 0));
+                    
+                    formPessoa formP = new formPessoa(CodigoSelecionado);
+                    formP.setVisible(true);
+                }
+            }
+        }
+        );
+        
+    }
 }

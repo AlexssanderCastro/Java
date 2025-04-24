@@ -4,6 +4,20 @@
  */
 package com.mycompany.prj_petshop.forms;
 
+import com.mycompany.prj_petshop.classesbo.PetBO;
+import com.mycompany.prj_petshop.objetos.Pet;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
+import java.util.regex.PatternSyntaxException;
+import javax.swing.JFormattedTextField;
+import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+import javax.swing.text.MaskFormatter;
+
 /**
  *
  * @author Alexssander
@@ -13,8 +27,16 @@ public class formRelatPet extends javax.swing.JFrame {
     /**
      * Creates new form formRelatPet
      */
+    private PetBO pBO;
+    private List<Pet> lstPets;
+    private MaskFormatter mftDataInicio, mftDataFim;
+    TableRowSorter<TableModel> sorter;
+    
     public formRelatPet() {
         initComponents();
+        pBO= new PetBO();
+        sorter= new TableRowSorter<TableModel>(tabPets.getModel());
+        tabPets.setRowSorter(sorter);
     }
 
     /**
@@ -33,8 +55,20 @@ public class formRelatPet extends javax.swing.JFrame {
         txtNome = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        txtDataInicial = new javax.swing.JTextField();
-        txtDataFinal = new javax.swing.JTextField();
+        try{
+            mftDataInicio = new MaskFormatter("##/##/####");
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Erro ao criar máscara na data inicial");
+        }
+        txtDataInicial = new JFormattedTextField(mftDataInicio);
+        try{
+            mftDataFim = new MaskFormatter("##/##/####");
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Erro ao criar máscara na data final");
+        }
+        txtDataFinal = new JFormattedTextField(mftDataFim);
         btnConsultar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabPets = new javax.swing.JTable();
@@ -42,7 +76,7 @@ public class formRelatPet extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         txtFiltro = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -53,6 +87,12 @@ public class formRelatPet extends javax.swing.JFrame {
 
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Nome:");
+
+        txtNome.addCaretListener(new javax.swing.event.CaretListener() {
+            public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                txtNomeCaretUpdate(evt);
+            }
+        });
 
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Data de Nascimento:");
@@ -79,21 +119,21 @@ public class formRelatPet extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtNome))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtDataInicial)
+                        .addComponent(txtDataInicial, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtDataFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE))))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtDataFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE))))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(274, 274, 274)
                 .addComponent(btnConsultar))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -117,11 +157,6 @@ public class formRelatPet extends javax.swing.JFrame {
 
         tabPets.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null, null},
@@ -156,10 +191,16 @@ public class formRelatPet extends javax.swing.JFrame {
 
         jLabel5.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel5.setText("Relatório de pessoas");
+        jLabel5.setText("Relatório de pets");
 
         jLabel6.setForeground(new java.awt.Color(0, 0, 0));
         jLabel6.setText("Filtro:");
+
+        txtFiltro.addCaretListener(new javax.swing.event.CaretListener() {
+            public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                txtFiltroCaretUpdate(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -169,18 +210,15 @@ public class formRelatPet extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(218, 218, 218)
-                                .addComponent(jLabel5))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(23, 23, 23)
-                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 496, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1))
-                .addContainerGap())
+                        .addGap(218, 218, 218)
+                        .addComponent(jLabel5))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 610, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(30, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -202,7 +240,7 @@ public class formRelatPet extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -210,11 +248,30 @@ public class formRelatPet extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
-        // TODO add your handling code here:
+        pesquisar();
     }//GEN-LAST:event_btnConsultarActionPerformed
+
+    private void txtNomeCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtNomeCaretUpdate
+        pesquisar();
+    }//GEN-LAST:event_txtNomeCaretUpdate
+
+    private void txtFiltroCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtFiltroCaretUpdate
+        String text = txtFiltro.getText();
+        if(text.length() ==0 ){
+            sorter.setRowFilter(null);
+        }
+        else{
+            try{
+                sorter.setRowFilter(RowFilter.regexFilter("^"+text));
+            }catch(PatternSyntaxException pse){
+                pse.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_txtFiltroCaretUpdate
 
     /**
      * @param args the command line arguments
@@ -268,4 +325,71 @@ public class formRelatPet extends javax.swing.JFrame {
     private javax.swing.JTextField txtFiltro;
     private javax.swing.JTextField txtNome;
     // End of variables declaration//GEN-END:variables
+
+    private void pesquisar() {
+        String nome=txtNome.getText();
+        String dataInicio=txtDataInicial.getText().trim();
+        String dataFim=txtDataFinal.getText().trim();
+        
+        if(!nome.isEmpty() && (dataInicio.length()==4) && (dataFim.length()==4)){
+            lstPets = pBO.getPets(nome);
+            preencherTabela(lstPets);
+        }else if((!nome.isEmpty()) && (dataInicio.length()!=4) && (dataFim.length()!=4)){
+            lstPets = pBO.getPets(nome,dataInicio,dataFim);
+            preencherTabela(lstPets);
+        }else if((dataInicio.length()!=4) && (dataFim.length()!=4)){
+            lstPets = pBO.getPets(dataInicio,dataFim);
+            preencherTabela(lstPets);
+        }else{
+            lstPets = pBO.getPets("");
+            preencherTabela(lstPets);
+        }
+        
+   
+    }
+    
+    
+    
+    
+    private void preencherTabela(List<Pet> lstPets) {
+        DefaultTableModel tabelaPets = (DefaultTableModel)tabPets.getModel();
+        tabPets.getColumnModel().getColumn(0).setPreferredWidth(80);
+        tabPets.getColumnModel().getColumn(1).setPreferredWidth(80);
+        tabPets.getColumnModel().getColumn(2).setPreferredWidth(80);
+        tabPets.getColumnModel().getColumn(3).setPreferredWidth(80);
+        tabPets.getColumnModel().getColumn(4).setPreferredWidth(80);
+        tabPets.getColumnModel().getColumn(5).setPreferredWidth(80);
+        tabPets.getColumnModel().getColumn(6).setPreferredWidth(80);
+        tabPets.getColumnModel().getColumn(7).setPreferredWidth(80);
+        tabelaPets.setNumRows(0);
+        
+        lstPets.forEach(itemPet->{
+            tabelaPets.addRow(new Object[]{
+                    itemPet.getIdPet(), itemPet.getNome(), itemPet.getData_nascimento(),itemPet.getEspecie(),
+                    itemPet.getRaca(),itemPet.getPorte(),itemPet.getCor(),itemPet.getP().getNome()
+                }
+            );
+            }
+        );
+        
+        tabPets.addMouseListener(new MouseAdapter()
+        {
+            int LinhaSelecionada;
+            
+            int CodigoSelecionado;
+            
+            @Override
+            public void mousePressed(MouseEvent e){
+                if(e.getClickCount() == 2){
+                    LinhaSelecionada = tabPets.getSelectedRow();
+                    CodigoSelecionado = (int)(tabPets.getValueAt(LinhaSelecionada, 0));
+                    
+                    formPet formP = new formPet(CodigoSelecionado);
+                    formP.setVisible(true);
+                }
+            }
+        }
+        );
+        
+    }
 }

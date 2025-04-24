@@ -51,35 +51,7 @@ public class PessoaDAO {
         
     }
 
-    public ArrayList<Pessoa> verTutoresPorNome(String texto) {
-    ArrayList<Pessoa> tutores = new ArrayList<>();
-
-    try {
-        // Corrigir o SELECT e garantir que os campos estejam corretos
-        PreparedStatement stmt;
-        if(texto.equals("")){
-            stmt = conn.prepareStatement("SELECT idpessoa,nome FROM pessoa");
-        }else{
-            stmt = conn.prepareStatement("SELECT idpessoa,nome FROM pessoa WHERE nome LIKE ?");
-            stmt.setString(1, texto + "%");
-        }
-        
-
-        ResultSet rs = stmt.executeQuery();
-
-        while (rs.next()) {
-            Pessoa p = new Pessoa();
-            p.setId(rs.getInt("idpessoa"));
-            p.setNome(rs.getString("nome"));
-            tutores.add(p);
-        }
-
-    } catch (SQLException ex) {
-        ex.printStackTrace();
-    }
-
-    return tutores;
-}
+    
     
     public List<Pessoa> getPessoas(String nome){
         List<Pessoa> lstP = new ArrayList<>();
@@ -138,11 +110,8 @@ public class PessoaDAO {
         int linhasAfetadas=0;
         
         try{
-            PreparedStatement stmt = conn.prepareStatement("Update pet set idpessoa = null WHERE idpessoa=?");
-            stmt.setInt(1, id);
-            stmt.executeUpdate();
-            
-            stmt = conn.prepareStatement("DELETE FROM pessoa WHERE idpessoa=?");
+           
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM pessoa WHERE idpessoa=?");
             stmt.setInt(1, id);
             
             linhasAfetadas=stmt.executeUpdate();
@@ -153,6 +122,75 @@ public class PessoaDAO {
         }
         
         return linhasAfetadas;
+    }
+
+    public List<Pessoa> getPessoas(String nome, String dataInicio, String dataFim) {
+        List<Pessoa> lstP = new ArrayList<>();
+        ResultSet rs;
+        try{
+            
+            PreparedStatement ppStmt = conn.prepareStatement("SELECT * FROM pessoa WHERE nome ILIKE ? AND data_nascimento BETWEEN ? AND ?");
+            ppStmt.setString(1 ,nome+"%");
+            ppStmt.setDate(2 ,md.string2Date(dataInicio));
+            ppStmt.setDate(3 ,md.string2Date(dataFim));
+            rs=ppStmt.executeQuery();
+            while(rs.next()){
+                lstP.add(getPessoa(rs));
+            }
+            
+            
+            
+        }
+        catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        
+        return lstP;
+    }
+
+    public List<Pessoa> getPessoas(String dataInicio, String dataFim) {
+        List<Pessoa> lstP = new ArrayList<>();
+        ResultSet rs;
+        try{
+            
+            PreparedStatement ppStmt = conn.prepareStatement("SELECT * FROM pessoa WHERE data_nascimento BETWEEN ? AND ?");
+            ppStmt.setDate(1 ,md.string2Date(dataInicio));
+            ppStmt.setDate(2 ,md.string2Date(dataFim));
+            rs=ppStmt.executeQuery();
+            while(rs.next()){
+                lstP.add(getPessoa(rs));
+            }
+            
+            
+            
+        }
+        catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        
+        return lstP;
+    }
+
+    public Pessoa getPessoa(int id) {
+        Pessoa pe = new Pessoa();
+        ResultSet rs;
+        try{
+            
+            PreparedStatement ppStmt = conn.prepareStatement("SELECT * FROM pessoa WHERE idpessoa=?");
+            ppStmt.setInt(1,id);
+            rs=ppStmt.executeQuery();
+            while(rs.next()){
+                pe=getPessoa(rs);
+            }
+            
+            
+            
+        }
+        catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        
+        return pe;
     }
 }
 

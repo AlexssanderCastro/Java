@@ -42,17 +42,20 @@
             <Property name="text" type="java.lang.String" value="Relat&#xf3;rios"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="mniRelatPets">
+            <MenuItem class="javax.swing.JMenuItem" name="mniRelatClientes">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Relat&#xf3;rio de Clientes"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mniRelatClientesActionPerformed"/>
+              </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem6">
+            <MenuItem class="javax.swing.JMenuItem" name="mniRelatPets">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Relat&#xf3;rio de Pets"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem6ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mniRelatPetsActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>

@@ -18,9 +18,7 @@ public class PessoaBO {
     public PessoaBO(){
         pDAO = new PessoaDAO();
     }
-    public  ArrayList<Pessoa> verTutoresPorNome(String texto) {
-        return pDAO.verTutoresPorNome(texto);
-    }
+    
     
     
     public Pessoa salvar(Pessoa p){
@@ -37,5 +35,17 @@ public class PessoaBO {
 
     public int excluir(int id) {
         return pDAO.excluir(id);
+    }
+
+    public List<Pessoa> getPessoas(String nome, String dataInicio, String dataFim) {
+        return pDAO.getPessoas(nome,dataInicio,dataFim);
+    }
+
+    public List<Pessoa> getPessoas(String dataInicio, String dataFim) {
+        return pDAO.getPessoas(dataInicio,dataFim);
+    }
+
+    public Pessoa getPessoa(int id) {
+        return pDAO.getPessoa(id);
     }
 }
