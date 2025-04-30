@@ -24,8 +24,8 @@ public class PessoaDAO {
     ManipulaData md;
 
     public PessoaDAO() {
-        this.conn = new Conexao().conectar();
-        this.md = new ManipulaData();
+        this.conn = Conexao.getInstancia().conectar();
+        this.md = ManipulaData.getInstancia();
     }
     
     public Pessoa salvar(Pessoa p){

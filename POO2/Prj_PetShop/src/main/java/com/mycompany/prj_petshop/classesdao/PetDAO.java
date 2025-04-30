@@ -26,8 +26,8 @@ public class PetDAO {
     ManipulaData md;
 
     public PetDAO() {
-        this.conn = new Conexao().conectar();
-        this.md = new ManipulaData();
+        this.conn = Conexao.getInstancia().conectar();
+        this.md = ManipulaData.getInstancia();
     }
     
     public Pet salvar(Pet p){
